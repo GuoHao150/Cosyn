@@ -96,7 +96,7 @@ Choose the build target that matches your available dependencies:
 
 ### Apptainer container (recommended for reproducibility)
 
-Pre-built Apptainer image recipes are provided under `apptainer/`. This is the easiest way to run Cosyn without manually installing Rust, g++, or libtorch on the host.
+Apptainer image recipes are provided under `apptainer/`. This is the easiest way to run Cosyn without manually installing Rust, g++, or libtorch on the host.
 
 #### Requirements
 
@@ -120,6 +120,12 @@ apptainer exec cosyn_cpu.sif cosyn -h
 
 # GPU image (embeds CUDA 11.8 + cuDNN 8 + NCCL + libtorch cu118)
 apptainer exec cosyn_gpu.sif cosyn -h
+
+# build the GPU version
+bash apptainer/build_gpu.sh
+
+# build the CPU version
+bash apptainer/build_cpu.sh
 ```
 
 
@@ -580,11 +586,6 @@ cosyn pll  -f input.fa -j codon_transformer_eval.pt
 ### Data and Software Availability
 
 The cosyn source code and documentation are permanently archived on Zenodo at [10.5281/zenodo.22167984](https://doi.org/10.5281/zenodo.22167984).
-
-To facilitate reproducibility and deployment, the Zenodo archive includes:
-
-- The pre-trained CodonTransformer evaluation model (`codon_transformer_eval.pt`) used for PLL scoring.
-- Ready-to-use Apptainer (Singularity) images (`cosyn_cpu.sif` and `cosyn_gpu.sif`) for CPU-only and GPU-enabled deployments.
 
 The full source code, build instructions, and issue tracker will be hosted on GitHub.
 
