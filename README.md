@@ -111,16 +111,18 @@ Apptainer image recipes are provided under `apptainer/`. This is the easiest way
 sudo apt-get update
 sudo apt-get install -y apptainer
 
-# build the GPU version
-bash apptainer/build_gpu.sh
-
-# build the CPU version
-bash apptainer/build_cpu.sh
 ```
 
 #### Build and run the images
 
 ```bash
+# After downloading this project
+# build the GPU version
+bash apptainer/build_gpu.sh
+
+# build the CPU version
+bash apptainer/build_cpu.sh
+
 # CPU-only image
 apptainer exec cosyn_cpu.sif cosyn -h
 
