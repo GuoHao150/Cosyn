@@ -1,0 +1,195 @@
+# Cosyn TOML configuration example
+#
+# Run with:
+#   cosyn run-config -c config.toml
+#
+# Only the section matching `command` is read; all other sections are ignored.
+
+# Subcommand to run. Supported values:
+#   fit, ufit, cai, mfe, gc, palindrome, mutate2stop, snp, assay, pll
+command = "fit"
+
+# ============================================================================
+# fit  -- optimize a CDS/RNA/amino-acid sequence
+# ============================================================================
+[fit]
+fasta = "input.fa"              # required: input FASTA file
+freq_table_info = "hc"          # codon frequency table short name
+win_size = 50                   # beam search window size
+rnd_size = 2                    # random walk size
+num_outputs = 1                 # number of candidate sequences to output
+lambda = 3.0                    # balance parameter between MFE and CAI
+threads = 0                     # number of threads (0 means use all CPUs)
+seq_parallel = 1                # number of sequences processed simultaneously
+outdir = "."                    # output directory
+prefix = ""                     # output file prefix (empty means no prefix)
+is_aa_seq = false               # input is amino acid sequences
+is_rna = false                  # input is RNA sequences (U instead of T)
+homopolymers = 6                # max allowed homopolymer length (0 disables)
+avoid_seqs = ""                 # optional file with motifs to avoid
+
+# Optimization objective switches (only one can be true at a time)
+gc_cai = false                  # optimize GC + CAI only (ignore MFE)
+mfe_cai = false                 # optimize MFE + CAI only (ignore GC)
+cmgmp = false                   # MFE/CAI/GC/mutate2stop/palindrome objective
+pmgc = false                    # CAI/GC/mutate2stop/palindrome objective
+palindrome = false              # add palindrome term to the default objective
+maximize_loss = false           # deoptimization mode (maximize loss)
+no_verbose = false              # suppress progress bars
+
+# Objective weights (used by cmgmp/pmgc and palindrome modes)
+weight_gc = 1.0
+weight_cai = 1.0
+weight_m2s = 1.0
+weight_palindrome = 1.0
+
+# MFE backend: "rust" (pure-Rust LinearFold, default) or "cpp" (deprecated alias)
+mfe_method = "rust"
+mfe_window = 0
+mfe_pll_start_codon = 0         # codon index where MFE/PLL evaluation starts
+
+# Search method: "beam" or "mcmc"
+search_method = "beam"
+mcmc_iterations = 1000
+mcmc_mutations = 5
+mcmc_accept_prob = 0.5
+mcmc_temperature = 0.0
+mcmc_traces = 1
+mcmc_region = ""                # e.g. "30-90" (base positions, multiples of 3)
+
+# ============================================================================
+# ufit -- unified objective optimization
+# ============================================================================
+[ufit]
+fasta = "input.fa"
+freq_table_info = "hc"
+win_size = 50
+rnd_size = 2
+num_outputs = 1
+lambda = 3.0
+weight_gc = 1.0
+weight_cai = 1.0
+weight_m2s = 1.0
+weight_palindrome = 1.0
+weight_mfe = 1                  # MFE weight in the unified objective
+weight_pll = 0.0                # CodonTransformer PLL weight
+model_path = ""                 # required for PLL (CodonTransformer JIT model)
+threads = 0
+seq_parallel = 1
+outdir = "."
+prefix = ""
+is_aa_seq = false
+is_rna = false
+homopolymers = 6
+avoid_seqs = ""
+maximize_loss = false
+no_verbose = false
+mfe_method = "rust"
+mfe_window = 0
+mfe_pll_start_codon = 0
+search_method = "beam"
+mcmc_iterations = 1000
+mcmc_mutations = 5
+mcmc_accept_prob = 0.5
+mcmc_temperature = 0.0
+mcmc_traces = 1
+mcmc_region = ""
+
+# ============================================================================
+# cai  -- calculate Codon Adaptation Index
+# ============================================================================
+[cai]
+fasta = "input.fa"
+freq_table_info = "hc"
+outdir = "."
+prefix = ""
+
+# ============================================================================
+# mfe  -- calculate Minimum Free Energy
+# ============================================================================
+[mfe]
+fasta = "input.fa"
+outdir = "."
+prefix = ""
+mfe_method = "rust"
+mfe_window = 0
+
+# ============================================================================
+# gc  -- calculate GC content and theoretical bounds
+# ============================================================================
+[gc]
+fasta = "input.fa"
+outdir = "."
+prefix = ""
+
+# ============================================================================
+# palindrome  -- detect palindromic subsequences
+# ============================================================================
+[palindrome]
+fasta = "input.fa"
+outdir = "."
+prefix = ""
+
+# ============================================================================
+# mutate2stop  -- count single-nucleotide mutations to stop codons
+# ============================================================================
+[mutate2stop]
+fasta = "input.fa"
+outdir = "."
+prefix = ""
+
+# ============================================================================
+# snp  -- optimize while fixing user-specified amino-acid mutations
+# ============================================================================
+[snp]
+fasta = "input.fa"
+mutations = ["A4R"]             # required: list of mutations like "A4R"
+freq_table_info = "hc"
+lambda = 2.0
+threads = 0
+homopolymers = 6
+outdir = "."
+prefix = ""
+avoid_seqs = ""
+gc_cai = false
+mfe_cai = false
+palindrome = false
+cmgmp = false
+pmgc = false
+weight_gc = 1.0
+weight_cai = 1.0
+weight_palindrome = 1.0
+weight_m2s = 1.0
+maximize_loss = false
+no_verbose = false
+mfe_method = "rust"
+mfe_window = 0
+mfe_pll_start_codon = 0
+search_method = "beam"
+mcmc_iterations = 1000
+mcmc_mutations = 5
+mcmc_accept_prob = 0.5
+mcmc_temperature = 0.0
+mcmc_traces = 1
+mcmc_region = ""
+
+# ============================================================================
+# assay  -- evaluate palindrome / MFE / GC / mutate2stop / CAI
+# ============================================================================
+[assay]
+fasta = "input.fa"
+freq_table_info = "hc"
+outdir = "."
+prefix = ""
+mfe_method = "rust"
+mfe_window = 0
+
+# ============================================================================
+# pll  -- evaluate CodonTransformer pseudo-log-likelihood
+# ============================================================================
+[pll]
+fasta = "input.fa"
+model_path = "codon_transformer_human.pt"  # required: JIT model path
+outdir = "."
+prefix = ""
+

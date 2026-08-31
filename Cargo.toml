@@ -1,0 +1,35 @@
+[workspace]
+members = [".", "linearfold_rust"]
+
+[package]
+name = "cosyn"
+version = "1.0.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+lazy_static = "*"
+threadpool = "1.0"
+rand = "0.8.5"
+serde = {version = "1", features = ["derive"]}
+serde_json = "1"
+structopt = "0.3"
+toml = "0.8"
+linearfold_rust = { path = "linearfold_rust" }
+kdam = "0.3.0"
+num_cpus = "1.15.0"
+regex = "1"
+itertools = "0.10.5"
+
+[features]
+default = ["pll"]
+pll = []
+
+[profile.dev]
+opt-level = 0
+debug = true
+
+[profile.release]
+opt-level = 3
+debug = false

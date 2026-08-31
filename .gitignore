@@ -1,0 +1,23 @@
+/target
+/.vscode
+/lib/*
+/article_benchmarks
+/article_benchmarks.log
+__pycache__/
+
+# Benchmark intermediate outputs / logs (regenerable from scripts)
+/example/mfe_window_test_final/tmp/
+/example/benchmark_seqs_final/evaluations/
+/example/benchmark_seqs_final/reproduce.log
+reproduce.log
+
+# Apptainer images and build cache
+*.sif
+*.simg
+/apptainer/cache/
+/apptainer/*.log
+
+# Test outputs and generated reports
+/test/outputs/
+/test/report.md
+/test/subcommand_report.md

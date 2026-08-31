@@ -1,0 +1,53 @@
+Bootstrap: docker
+From: docker.m.daocloud.io/library/ubuntu:24.04
+
+%files
+    cache/cpu/libtorch /opt/libtorch
+    cache/src /opt/cosyn-src
+
+%post
+    export DEBIAN_FRONTEND=noninteractive
+
+    # Use Tsinghua APT mirror for faster builds in mainland China.
+    # Use HTTP here because ca-certificates is not installed yet.
+    if [ -f /etc/apt/sources.list.d/ubuntu.sources ]; then
+        sed -i 's|http://archive.ubuntu.com/ubuntu|http://mirrors.tuna.tsinghua.edu.cn/ubuntu|g' /etc/apt/sources.list.d/ubuntu.sources || true
+        sed -i 's|http://security.ubuntu.com/ubuntu|http://mirrors.tuna.tsinghua.edu.cn/ubuntu|g' /etc/apt/sources.list.d/ubuntu.sources || true
+    else
+        sed -i 's|http://archive.ubuntu.com/ubuntu|http://mirrors.tuna.tsinghua.edu.cn/ubuntu|g' /etc/apt/sources.list || true
+        sed -i 's|http://security.ubuntu.com/ubuntu|http://mirrors.tuna.tsinghua.edu.cn/ubuntu|g' /etc/apt/sources.list || true
+    fi
+
+    apt-get update
+    apt-get install -y --no-install-recommends \
+        build-essential g++ curl ca-certificates unzip libgomp1
+
+    # Install Rust. Use Tsinghua mirror for toolchain downloads; rustup-init
+    # script itself is fetched from the official source (ca-certificates is
+    # already installed at this point).
+    export RUSTUP_DIST_SERVER=https://mirrors.tuna.tsinghua.edu.cn/rustup
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable
+    . "$HOME/.cargo/env"
+
+    cd /opt/cosyn-src
+    export LIBTORCH=/opt/libtorch
+    export PATH="/root/.cargo/bin:${PATH}"
+
+    # Build CPU-only cosyn.
+    make release_cpu
+
+    mkdir -p /opt/cosyn/bin
+    cp target/release/cosyn /opt/cosyn/bin/cosyn
+
+    # Cleanup to reduce image size.
+    rm -rf target
+    apt-get clean
+    rm -rf /var/lib/apt/lists/*
+
+%environment
+    export LIBTORCH=/opt/libtorch
+    export LD_LIBRARY_PATH=/opt/libtorch/lib:${LD_LIBRARY_PATH}
+    export PATH=/opt/cosyn/bin:${PATH}
+
+%runscript
+    exec cosyn "$@"

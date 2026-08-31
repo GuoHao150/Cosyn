@@ -1,0 +1,16 @@
+[package]
+name = "linearfold_rust"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "linearfold_rust"
+path = "src/main.rs"
+
+[lib]
+name = "linearfold_rust"
+path = "src/lib.rs"
+
+[dependencies]
+clap = { version = "4.5", features = ["derive"] }
+rustc-hash = "2.1"
