@@ -110,6 +110,12 @@ Apptainer image recipes are provided under `apptainer/`. This is the easiest way
 # install the distribution package (Ubuntu 24.04+)
 sudo apt-get update
 sudo apt-get install -y apptainer
+
+# build the GPU version
+bash apptainer/build_gpu.sh
+
+# build the CPU version
+bash apptainer/build_cpu.sh
 ```
 
 #### Build and run the images
@@ -121,11 +127,6 @@ apptainer exec cosyn_cpu.sif cosyn -h
 # GPU image (embeds CUDA 11.8 + cuDNN 8 + NCCL + libtorch cu118)
 apptainer exec cosyn_gpu.sif cosyn -h
 
-# build the GPU version
-bash apptainer/build_gpu.sh
-
-# build the CPU version
-bash apptainer/build_cpu.sh
 ```
 
 
