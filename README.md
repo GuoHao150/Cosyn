@@ -9,8 +9,12 @@
 
 - [Core Design](#core-design-bidirectional--hybrid--finely-tunable)
 - [Prerequisites](#prerequisites)
+- [Download](#download)
 - [Installation](#installation)
 - [Quick Start](#quick-start)
+- [Configuration-Driven Execution](#configuration-driven-execution)
+- [Custom Codon Frequency Tables](#custom-codon-frequency-tables)
+- [Panoramic Design Exploration](#panoramic-design-exploration)
 - [Subcommands Overview](#subcommands-overview)
 - [Optimization Commands](#optimization-commands)
   - [`fit` — Strategy-Based Optimization](#fit--strategy-based-optimization)
@@ -19,19 +23,18 @@
   - [`snp` — Localized SNP Optimization](#snp--localized-snp-optimization)
 - [Evaluation Commands](#evaluation-commands)
   - [`assay` — Comprehensive Sequence Assay](#assay--comprehensive-sequence-assay)
-  - [Individual Commands](#individual-evaluation-commands)
-- [Configuration & Exploration](#configuration--exploration)
-  - [TOML Configuration](#configuration-driven-execution)
-  - [Custom Codon Tables](#custom-codon-frequency-tables)
-  - [Panoramic Design Exploration](#panoramic-design-exploration)
+  - [Individual Evaluation Commands](#individual-evaluation-commands)
+  - [Panoramic Design Commands](#panoramic-design-commands)
 - [Parameter Reference](#parameter-reference)
   - [Window Size and Memory](#window-size-and-memory-usage)
   - [Codon PLL and GPU](#codon-pll-and-model-memory)
+  - [PLL GPU Utilization Tuning](#pll-gpu-utilization-tuning)
   - [CodonTransformer Model Export](#codontransformer-model-export)
   - [Data and Software Availability](#data-and-software-availability)
   - [All Parameters](#all-parameters)
 - [Output Format](#output-format)
-- [Performance Tuning](#performance-tuning)
+- [Caveats](#caveats)
+- [Reference System](#reference-system)
 - [Acknowledgments](#acknowledgments)
 - [License](#license)
 
@@ -89,6 +92,27 @@ Choose the build target that matches your available dependencies:
 | **libtorch** (CPU) | — | ✅ | — |
 
 > **Note:** Conda environments may cause link errors. Deactivate conda before building if you encounter issues.
+
+---
+
+## Download
+
+### Source Code
+
+The latest source code is available from the [GitHub Releases](https://github.com/GuoHao150/Cosyn/releases) page.
+
+### Pre-built Images & Models (ScienceDB)
+
+For users who prefer ready-to-use artifacts, we also host pre-built Apptainer images and the CodonTransformer model on [ScienceDB](https://www.scidb.cn/):
+
+| File | Description | Download |
+|------|-------------|----------|
+| `cosyn_gpu.sif` | GPU-enabled Apptainer image (CUDA 11.8) | [Download](https://download.scidb.cn/download?fileId=27e9d0da13de592db8bb59a24399ac38&path=/V1/cosyn_gpu.sif&username=guohao3510@foxmail.com&fileName=cosyn_gpu.sif) |
+| `cosyn_cpu.sif` | CPU-only Apptainer image | [Download](https://download.scidb.cn/download?fileId=69f00b5d4531666ede635321d48e67cf&path=/V1/cosyn_cpu.sif&username=guohao3510@foxmail.com&fileName=cosyn_cpu.sif) |
+| `codon_transformer_eval.pt` | Pre-traced CodonTransformer model for PLL scoring | [Download](https://download.scidb.cn/download?fileId=f4bd709f673ad6921fb316c4ea42b649&path=/V1/codon_transformer_eval.pt&username=guohao3510@foxmail.com&fileName=codon_transformer_eval.pt) |
+| `cosyn_souce_code.zip` | Archived source code | [Download](https://download.scidb.cn/download?fileId=7ed3430e2992609a25946e9a78fbe181&path=/V1/cosyn_souce_code.zip&username=guohao3510@foxmail.com&fileName=cosyn_souce_code.zip) |
+
+> **Note:** The `.sif` images can be run directly with `apptainer exec` (see [Installation → Apptainer container](#apptainer-container-recommended-for-reproducibility)). The `codon_transformer_eval.pt` model is used with the `-j` flag in `ufit` or `codon-pll` (see [CodonTransformer Model Export](#codontransformer-model-export)).
 
 ---
 
@@ -703,8 +727,6 @@ When `--output_fasta` is enabled, a `.fasta` file is also produced with headers 
 
 ---
 
-
-
 ## Caveats
 
 - **CUSTOM codon tables** (`c*` prefixes) do not include stop codons. Remove stop codons from input sequences when using these tables.
@@ -747,3 +769,4 @@ Cosyn is licensed under the [Apache License, Version 2.0](https://www.apache.org
 You may use, modify, and distribute this software freely for academic, research, and commercial purposes, subject to the terms and conditions of the Apache License. For commercial licensing, collaboration, or support inquiries, please contact the authors.
 
 See the [`LICENSE`](LICENSE) file for the full license text.
+
